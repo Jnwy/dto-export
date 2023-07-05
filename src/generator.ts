@@ -2,10 +2,10 @@ const path = require('path');
 const fs = require('fs');
 
 // const searchPath = path.join(__dirname, 'src/game/dto/');
-const directoryPath = path.join(__dirname, 'src/dto');
+// const directoryPath = path.join(__dirname, 'src/dto');
 const outputPath = path.join(__dirname, 'src/dto/index.ts');
 
-console.log(directoryPath, outputPath);
+// console.log(directoryPath, outputPath);
 
 function generateExportStatements(filePaths) {
   return filePaths
@@ -21,7 +21,7 @@ function readDirectory(directoryPath, parentDirectory = '') {
   const files = fs.readdirSync(directoryPath);
 
   // 儲存檔案路徑
-  const filePaths = [];
+  const filePaths: any[] = [];
 
   // 遍歷檔案和資料夾
   files.forEach((file) => {
@@ -66,9 +66,11 @@ function writeFile(files) {
   })();
 }
 
-console.log('Generating...');
+// console.log('Generating...');
 
-// 呼叫函式讀取目錄
-const filePaths = readDirectory(directoryPath);
+// // 呼叫函式讀取目錄
+// const filePaths = readDirectory(directoryPath);
 
-writeFile(filePaths);
+// writeFile(filePaths);
+
+export { writeFile, readDirectory, generateExportStatements };
