@@ -2,6 +2,7 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
+import chokidar from 'chokidar';
 
 const {
   writeFile,
@@ -28,23 +29,13 @@ const onPromptState = (state: any) => {
 
 const program = new Command()
   .version('1.0.0')
-  .description('CLI for generate index.ts export statements')
-  // .action((p) => {
-  //   devPath = p;
-  // })
-  .option('-d, --path <path>', '指定要讀取的目錄路徑')
+  .description('CLI for generating index.ts export statements')
+  .option('-d, --path <path>', 'Specify the directory path to read')
+  .option('-w, --watch', 'Watch for file changes')
   .parse(process.argv);
 
-
 async function run(): Promise<void> {
-
   const options = program.opts();
-
-  // console.log(port);
-
-  // if (typeof devPath === 'string') {
-  //   devPath = devPath.trim();
-  // }
 
   if (typeof options.path === 'string') {
     devPath = options.path.trim();
@@ -67,27 +58,38 @@ async function run(): Promise<void> {
   if (!devPath) {
     console.log(
       '\nPlease specify the project directory:\n' +
-      `  ${chalk.cyan(program.name())} ${chalk.green(
-        '<project-directory>'
-      )}\n` +
-      'For example:\n' +
-      `  ${chalk.cyan(program.name())} ${chalk.green('./src')}\n\n` +
-      `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
+        `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}\n` +
+        'For example:\n' +
+        `  ${chalk.cyan(program.name())} ${chalk.green('./src')}\n\n` +
+        `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
     );
     process.exit(1);
   }
 
+  if (options.watch) {
+    const watcher = chokidar.watch(devPath);
 
+    watcher.on('change', (filePath) => {
+      console.log(`File changed: ${filePath}`);
 
-  // 讀取目錄
-  const filePaths = readDirectory(devPath);
+      // Read directory
+      const filePaths = readDirectory(devPath);
 
-  // 生成 export 語句
-  const exportStatements = generateExportStatements(filePaths);
+      // Generate export statements
+      const exportStatements = generateExportStatements(filePaths);
 
-  console.log(exportStatements);
+      console.log(exportStatements);
 
-  writeFile(filePaths, devPath);
+      writeFile(filePaths, devPath);
+    });
+
+    console.log(`Watching for changes in directory: ${devPath}`);
+  } else {
+    // Read directory
+    const filePaths = readDirectory(devPath);
+
+    writeFile(filePaths, devPath);
+  }
 }
 
 run();
