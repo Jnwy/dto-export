@@ -4,22 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "ncc build ./index.ts -w -o dist/",
+    "clean": "rimraf ./dist/ ./node_modules",
+    "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "build": "pnpm release",
     "generate": "node index.js",
-    "build": "tsc -p .",
-    "start": "node ./dist/cli.js"
+    "build:watch": "tsc -p . --watch",
+    "start": "node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.3.3",
+    "@vercel/ncc": "^0.36.1",
+    "rimraf": "^5.0.1",
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "chalk": "^5.3.0",
     "commander": "^11.0.0",
     "prompts": "^2.4.2"
   },
   "bin": {
-    "dto-export-cli": "./dist/cli.js"
+    "dto-export-cli": "./dist/index.js"
   }
 }

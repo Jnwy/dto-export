@@ -3,7 +3,7 @@ const fs = require('fs');
 
 // const searchPath = path.join(__dirname, 'src/game/dto/');
 // const directoryPath = path.join(__dirname, 'src/dto');
-const outputPath = path.join(__dirname, 'src/dto/index.ts');
+// const outputPath = path.join(__dirname, 'src/dto/index.ts');
 
 // console.log(directoryPath, outputPath);
 
@@ -46,14 +46,14 @@ function readDirectory(directoryPath, parentDirectory = '') {
   return filePaths;
 }
 
-function writeFile(files) {
+function writeFile(files, outputPath = path.join(__dirname, 'src/dto/index.ts')) {
   (async () => {
     try {
       const fileNames = files.map((file) => file.replace('.ts', ''));
       const exportStatements = generateExportStatements(fileNames);
       const content = `${exportStatements}\n`;
 
-      fs.writeFile(outputPath, content, (err) => {
+      fs.writeFile(`${outputPath}/index.ts`, content, (err) => {
         if (err) {
           console.error('Error writing file:', err);
         } else {
