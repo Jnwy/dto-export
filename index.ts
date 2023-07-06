@@ -32,7 +32,7 @@ const program = new Command()
   // .action((p) => {
   //   devPath = p;
   // })
-  // .option('-d, --directory <string>', '指定要讀取的目錄路徑')
+  .option('-d, --path <path>', '指定要讀取的目錄路徑')
   .parse(process.argv);
 
 
@@ -42,8 +42,12 @@ async function run(): Promise<void> {
 
   // console.log(port);
 
-  if (typeof devPath === 'string') {
-    devPath = devPath.trim();
+  // if (typeof devPath === 'string') {
+  //   devPath = devPath.trim();
+  // }
+
+  if (typeof options.path === 'string') {
+    devPath = options.path.trim();
   }
 
   if (!devPath) {
