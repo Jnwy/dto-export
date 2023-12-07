@@ -1,0 +1,47 @@
+// TypeScript Handlebars Template
+{{!-- Import Statements --}}
+import { ColumnType, TableColumnType, TableConfig } from "../testSrc/interface/dynamicTable";
+import { {{ tableName }}ListResultI } from "../testSrc/interface/listResults.ts/{{ tableName }}ListResult";
+
+{{!-- Gen Table Column Definition --}}
+export const {{ tableName }}TableColumn: TableColumnType<{{ tableName }}ListResultI>[] = [
+  {{#each columns as |column|}}
+  {{#if (eq column.type 'switch')}}
+  {
+    name: '{{column.name}}',
+    key: '{{column.key}}',
+    label: '{{column.name}}',
+    type: ColumnType.SWITCH,
+    handleChange: (event: any, id: string, checked: boolean) => {
+      postData(`{{ ../tableName }}/${id}`,
+        { {{column.key}}: checked },
+        true,
+        RequestMethod.PATCH).then((result) => {
+          console.log('refetch');
+        });
+    },
+    width: 116,
+  },
+  {{/if}}
+  {{#if (eq column.type 'content')}}
+  { name: '{{column.name}}', key: '{{column.key}}', type: ColumnType.CONTENT, width: 184, sort: true },
+  {{/if}}
+  {{#if (eq column.type 'index')}}
+  { name: '{{column.name}}', key: '{{column.key}}', type: ColumnType.INDEX, width: 68 },
+  {{/if}}
+  {{#if (eq column.type 'tag')}}
+  { name: '{{column.name}}', key: '{{column.key}}', type: ColumnType.TAG, width: 300 },
+  {{/if}}
+  {{/each}}
+
+  // Default Column
+  { name: '', type: ColumnType.EDIT, width: 84 },
+  { name: '', type: ColumnType.DELETE, width: 84 },
+  { name: '', type: ColumnType.BLANK, width: '100%' },
+  ];
+
+  {{!-- Gen System Table Configuration --}}
+  export const {{ tableName }}SystemTableConfig: TableConfig<{{ tableName }}ListResultI> = {
+    tableId: '{{ tableName }}',
+    columns: {{ tableName }}TableColumn,
+    };

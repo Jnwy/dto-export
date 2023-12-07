@@ -1,14 +1,12 @@
-#!/usr/bin/env node
+#!/usr/bin/env node;
+import { genTableConfig } from './generator/tablConfig.generator';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
 import chokidar from 'chokidar';
 
-const {
-  writeFile,
-  readDirectory,
-  generateExportStatements,
-} = require('./generator');
+import { writeDtoToFile, readDirectory, generateExportStatements } from './generator';
+import { generateMapper } from './mapper';
 
 let devPath: string = '';
 
@@ -32,9 +30,29 @@ const program = new Command()
   .description('CLI for generating index.ts export statements')
   .option('-d, --path <path>', 'Specify the directory path to read')
   .option('-w, --watch', 'Watch for file changes')
-  .parse(process.argv);
+  .command('mapper').alias('m').action(() => {
+    generateMapper();
+  });
 
-async function run(): Promise<void> {
+program.command('dto').action(() => {
+  console.log(`execute: dto`);
+  runDtoGenerator();
+});
+
+program
+  .command('table')
+  .description('Generate tableConfig by ListResult interface.')
+  .option('-s, --source <source>', 'Source ListResult path.')
+  .option('-t, --target <target>', 'tableConfig target')
+  .action((options) => {
+    console.log('Generate Table Schema');
+    console.log('Command table executed with options:');
+    console.log(options);
+    genTableConfig();
+  });
+
+program.parse(process.argv);
+async function runDtoGenerator(): Promise<void> {
   const options = program.opts();
 
   if (typeof options.path === 'string') {
@@ -58,10 +76,10 @@ async function run(): Promise<void> {
   if (!devPath) {
     console.log(
       '\nPlease specify the project directory:\n' +
-        `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}\n` +
-        'For example:\n' +
-        `  ${chalk.cyan(program.name())} ${chalk.green('./src')}\n\n` +
-        `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
+      `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}\n` +
+      'For example:\n' +
+      `  ${chalk.cyan(program.name())} ${chalk.green('./src')}\n\n` +
+      `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
     );
     process.exit(1);
   }
@@ -75,12 +93,7 @@ async function run(): Promise<void> {
       // Read directory
       const filePaths = readDirectory(devPath);
 
-      // Generate export statements
-      const exportStatements = generateExportStatements(filePaths);
-
-      console.log(exportStatements);
-
-      writeFile(filePaths, devPath);
+      writeDtoToFile(filePaths, devPath);
     });
 
     console.log(`Watching for changes in directory: ${devPath}`);
@@ -88,8 +101,8 @@ async function run(): Promise<void> {
     // Read directory
     const filePaths = readDirectory(devPath);
 
-    writeFile(filePaths, devPath);
+    writeDtoToFile(filePaths, devPath);
   }
 }
 
-run();
+genTableConfig();

@@ -46,7 +46,7 @@ function readDirectory(directoryPath, parentDirectory = '') {
   return filePaths;
 }
 
-function writeFile(files, outputPath = path.join(__dirname, 'src/dto/index.ts')) {
+function writeDtoToFile(files, outputPath = path.join(__dirname, 'src/dto/index.ts')) {
   (async () => {
     try {
       const fileNames = files.map((file) => file.replace('.ts', ''));
@@ -73,4 +73,4 @@ function writeFile(files, outputPath = path.join(__dirname, 'src/dto/index.ts'))
 
 // writeFile(filePaths);
 
-export { writeFile, readDirectory, generateExportStatements };
+export { writeDtoToFile, readDirectory, generateExportStatements };
