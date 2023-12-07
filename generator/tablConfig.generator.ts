@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Handlebars from 'handlebars';
 import path from 'path';
-import { ColumnType } from '../testSrc/interface/dynamicTable';
+import { ColumnType } from '../testSrc/interfaces/dynamicTable';
 
 interface ColumnDataI {
   key: string;
@@ -54,7 +54,6 @@ export const genTableConfig = (tableConfigData: TableConfigDataI) => {
   const tableConfigOutput = compiledTemplate(tableConfigData);
 
   const outputPath = path.join(tableConfigPath, `${tableConfigData.lowerName}TableConfig.ts`);
-  console.log(outputPath);
 
   // 檢查文件是否存在
   if (!fs.existsSync(outputPath)) {
@@ -123,7 +122,6 @@ function destructureFileContent(filePath: string): TableConfigDataI {
     const upperName = interfaceName.charAt(0).toUpperCase() + interfaceName.slice(1);
     const lowerName = interfaceName.charAt(0).toLowerCase() + interfaceName.slice(1);
     const listResultPath = `../${configData.listResultPath}/${lowerName}ListResult`;
-    console.log('listResultPath: ', listResultPath);
     return { upperName, lowerName, listResultPath, columns: result };
   } else {
     console.error('在檔案中找不到介面。');
