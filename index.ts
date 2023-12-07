@@ -28,22 +28,19 @@ const onPromptState = (state: any) => {
 const program = new Command()
   .version('1.0.0')
   .description('CLI for generating index.ts export statements')
-  .option('-d, --path <path>', 'Specify the directory path to read')
-  .option('-w, --watch', 'Watch for file changes')
-  .command('mapper').alias('m').action(() => {
-    generateMapper();
-  });
+  .command('dto').action(() => {
+    console.log(`execute: dto`);
+    runDtoGenerator();
+  }).option('-d, --path <path>', 'Specify the directory path to read')
+  .option('-w, --watch', 'Watch for file changes');
 
-program.command('dto').action(() => {
-  console.log(`execute: dto`);
-  runDtoGenerator();
+program.command('mapper').alias('m').action(() => {
+  generateMapper();
 });
 
 program
   .command('table')
   .description('Generate tableConfig by ListResult interface.')
-  .option('-s, --source <source>', 'Source ListResult path.')
-  .option('-t, --target <target>', 'tableConfig target')
   .action((options) => {
     // console.log('Generate Table Schema');
     // console.log('Command table executed with options:');
