@@ -1,11 +1,11 @@
 #!/usr/bin/env node;
-import { genTableConfig } from './generator/tablConfig.generator';
 import chalk from 'chalk';
+import chokidar from 'chokidar';
 import { Command } from 'commander';
 import prompts from 'prompts';
-import chokidar from 'chokidar';
+import { genTableRun } from './generator/tablConfig.generator';
 
-import { writeDtoToFile, readDirectory, generateExportStatements } from './generator';
+import { readDirectory, writeDtoToFile } from './generator';
 import { generateMapper } from './mapper';
 
 let devPath: string = '';
@@ -45,10 +45,10 @@ program
   .option('-s, --source <source>', 'Source ListResult path.')
   .option('-t, --target <target>', 'tableConfig target')
   .action((options) => {
-    console.log('Generate Table Schema');
-    console.log('Command table executed with options:');
+    // console.log('Generate Table Schema');
+    // console.log('Command table executed with options:');
     console.log(options);
-    genTableConfig();
+    genTableRun();
   });
 
 program.parse(process.argv);
@@ -104,5 +104,3 @@ async function runDtoGenerator(): Promise<void> {
     writeDtoToFile(filePaths, devPath);
   }
 }
-
-genTableConfig();

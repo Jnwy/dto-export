@@ -1,0 +1,5 @@
+{
+  "srcPath": "testSrc",
+  "listResultPath": "interface/listResults",
+  "tableConfigPath": "tableConfigs"
+}

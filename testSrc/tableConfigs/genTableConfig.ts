@@ -1,9 +1,17 @@
 // TypeScript Handlebars Template
-import { ColumnType, TableColumnType, TableConfig } from "../testSrc/interface/dynamicTable";
-import { genListResultI } from "../testSrc/interface/listResults.ts/genListResult";
+import { ColumnType, TableColumnType, TableConfig } from "../interface/dynamicTable";
+import { GenListResultI } from "../interface/listResults/genListResult";
+import { RequestMethod } from 'shared/constants/enums';
+import { postData } from "utils/api/requestHelper";
 
-export const genTableColumn: TableColumnType<genListResultI>[] = [
-  { name: 'Test', key: 'test', type: ColumnType.CONTENT, width: 184, sort: true },
+export const genTableColumn: TableColumnType<GenListResultI>[] = [
+  { name: 'Id', key: 'id', type: ColumnType.CONTENT, width: 184, sort: true },
+  { name: 'Sequence', key: 'sequence', type: ColumnType.INDEX, width: 68 },
+  { name: 'Title', key: 'title', type: ColumnType.CONTENT, width: 184, sort: true },
+  { name: 'Cover', key: 'cover', type: ColumnType.CONTENT, width: 184, sort: true },
+  { name: 'Price', key: 'price', type: ColumnType.CONTENT, width: 184, sort: true },
+  { name: 'Tags', key: 'tags', type: ColumnType.CONTENT, width: 184, sort: true },
+  { name: 'Create Date', key: 'createDate', type: ColumnType.CONTENT, width: 184, sort: true },
   {
     name: 'Publish',
     key: 'isPublish',
@@ -26,7 +34,7 @@ export const genTableColumn: TableColumnType<genListResultI>[] = [
   { name: '', type: ColumnType.BLANK, width: '100%' },
   ];
 
-  export const genSystemTableConfig: TableConfig<genListResultI> = {
+  export const genSystemTableConfig: TableConfig<GenListResultI> = {
     tableId: 'gen',
     columns: genTableColumn,
     };

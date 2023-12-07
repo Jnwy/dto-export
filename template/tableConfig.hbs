@@ -1,10 +1,12 @@
 // TypeScript Handlebars Template
 {{!-- Import Statements --}}
-import { ColumnType, TableColumnType, TableConfig } from "../testSrc/interface/dynamicTable";
-import { {{ tableName }}ListResultI } from "../testSrc/interface/listResults.ts/{{ tableName }}ListResult";
+import { ColumnType, TableColumnType, TableConfig } from "../interface/dynamicTable";
+import { {{ upperName }}ListResultI } from "{{listResultPath}}";
+import { RequestMethod } from 'shared/constants/enums';
+import { postData } from "utils/api/requestHelper";
 
 {{!-- Gen Table Column Definition --}}
-export const {{ tableName }}TableColumn: TableColumnType<{{ tableName }}ListResultI>[] = [
+export const {{ lowerName }}TableColumn: TableColumnType<{{ upperName }}ListResultI>[] = [
   {{#each columns as |column|}}
   {{#if (eq column.type 'switch')}}
   {
@@ -13,7 +15,7 @@ export const {{ tableName }}TableColumn: TableColumnType<{{ tableName }}ListResu
     label: '{{column.name}}',
     type: ColumnType.SWITCH,
     handleChange: (event: any, id: string, checked: boolean) => {
-      postData(`{{ ../tableName }}/${id}`,
+      postData(`{{ ../lowerName }}/${id}`,
         { {{column.key}}: checked },
         true,
         RequestMethod.PATCH).then((result) => {
@@ -41,7 +43,7 @@ export const {{ tableName }}TableColumn: TableColumnType<{{ tableName }}ListResu
   ];
 
   {{!-- Gen System Table Configuration --}}
-  export const {{ tableName }}SystemTableConfig: TableConfig<{{ tableName }}ListResultI> = {
-    tableId: '{{ tableName }}',
-    columns: {{ tableName }}TableColumn,
+  export const {{ lowerName }}SystemTableConfig: TableConfig<{{ upperName }}ListResultI> = {
+    tableId: '{{ lowerName }}',
+    columns: {{ lowerName }}TableColumn,
     };
