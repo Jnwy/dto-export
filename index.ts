@@ -7,6 +7,8 @@ import { genTableRun } from './generator/tablConfig.generator';
 
 import { readDirectory, writeDtoToFile } from './generator';
 import { generateMapper } from './mapper';
+import path from 'path';
+import fs from 'fs';
 
 let devPath: string = '';
 
@@ -101,3 +103,8 @@ async function runDtoGenerator(): Promise<void> {
     writeDtoToFile(filePaths, devPath);
   }
 }
+
+
+const templatePath = path.join(__dirname, 'template');
+const tableConfigTemplate = fs.readFileSync(templatePath, 'utf-8');
+console.log(tableConfigTemplate);
