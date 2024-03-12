@@ -5,9 +5,9 @@
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
-    "esModuleInterop": true,
+    "esModuleInterop": true
   },
   "assets": ["**/template/*"],
-  "include": ["**/*","**/template/*"],
-  "exclude": ["dist"]
+  "include": ["**/*", "**/template/*"],
+  "exclude": ["dist", "testSrc"]
 }

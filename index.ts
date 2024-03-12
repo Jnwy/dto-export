@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import chokidar from 'chokidar';
 import { Command } from 'commander';
 import prompts from 'prompts';
-import { genTableRun } from './generator/tablConfig.generator';
+import { genTableRun } from './generator/tableConfig.generator';
 
-import { readDirectory, writeDtoToFile } from './generator';
+import { readDirectory, writeDtoToFile } from './generator/export.generator';
 import { generateMapper } from './mapper';
 import path from 'path';
 import fs from 'fs';
@@ -99,12 +99,12 @@ async function runDtoGenerator(): Promise<void> {
   } else {
     // Read directory
     const filePaths = readDirectory(devPath);
-
+    
     writeDtoToFile(filePaths, devPath);
   }
 }
 
 
-const templatePath = path.join(__dirname, 'template');
-const tableConfigTemplate = fs.readFileSync(templatePath, 'utf-8');
-console.log(tableConfigTemplate);
+// const templatePath = path.join(__dirname, 'template');
+// const tableConfigTemplate = fs.readFileSync(templatePath, 'utf-8');
+// console.log(tableConfigTemplate);

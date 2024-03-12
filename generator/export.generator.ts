@@ -66,6 +66,7 @@ function writeDtoToFile(files, outputPath = path.join(__dirname, 'src/dto/index.
   })();
 }
 
+
 // console.log('Generating...');
 
 // // 呼叫函式讀取目錄
