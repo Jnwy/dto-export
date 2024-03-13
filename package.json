@@ -22,7 +22,8 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
+    "@swc/core": "^1.4.7",
+    "chalk": "^4",
     "chokidar": "^3.5.3",
     "commander": "^11.0.0",
     "fs-extra": "^11.2.0",
