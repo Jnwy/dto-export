@@ -35,19 +35,24 @@ async function writeDtoToFile(filePaths: string[], outputPath: string) {
     const fileNames = filePaths.map((file) => file.replace('.ts', ''));
     const exportStatements = generateExportStatements(fileNames);
     const content = `${exportStatements}\n`;
-    try {
-      fs.writeFileSync(`${outputPath}/index.ts`, content);
-    } catch (error) {
-      console.error('Error writing file:', error);
-    } finally {
-      console.log(chalk.yellowBright('index.ts'), chalk.blue('file has been generated successfully!'));
+
+    // Check if a file with the same name and content already exists
+    const existingFilePath = `${outputPath}/index.ts`;
+    if (fs.existsSync(existingFilePath)) {
+      const existingContent = fs.readFileSync(existingFilePath, 'utf-8');
+      if (existingContent === content) {
+        console.log(chalk.yellowBright('index.ts'), chalk.blue('already exists and has the same content, no need to write again.'));
+        return; // If a file with the same content already exists, don't perform the write operation
+      }
     }
-  } catch (err) {
-    console.error('Error reading files:', err);
+
+    // Write a new file
+    fs.writeFileSync(existingFilePath, content);
+    console.log(chalk.yellowBright('index.ts'), chalk.blue('file has been generated successfully!'));
+  } catch (error) {
+    console.error('Error writing file:', error);
   }
-
 }
-
 
 // console.log('Generating...');
 
