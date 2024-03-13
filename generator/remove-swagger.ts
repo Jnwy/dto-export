@@ -7,11 +7,11 @@ const fs = require('fs');
 
 function removeApiProperty(filePath: string) {
   let fileContent = fs.readFileSync(filePath, 'utf-8');
-   // 移除 import { ApiProperty } from '@nestjs/swagger' 及其後的換行符
-  fileContent = fileContent.replace(/import { ApiProperty } from '@nestjs\/swagger';\s*\n?/, '');
+  // 移除 import { ApiProperty } from '@nestjs/swagger' 及其後的換行符
+  fileContent = fileContent.replace(/import { ApiProperty } from ["']@nestjs\/swagger["'];\s*\n?/, '');
 
   // 移除 @ApiProperty decorators
-  fileContent = fileContent.replace(/@ApiProperty\(.*?\)\s*/g, '');
+  fileContent = fileContent.replace(/@ApiProperty\([\s\S]*?\)\s*/g, '');
 
   // console.log(chalk.blue('filePath: '), chalk.yellowBright(filePath));
 

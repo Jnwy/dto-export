@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ncc build ./index.ts -w -o dist/",
     "clean": "rimraf ./dist/ ./node_modules",
-    "release": "ncc build ./index.ts -o ./dist/ --minify --no-cache --no-source-map-register",
+    "release": "tsup build ./index.ts --minify --dts",
     "build": "pnpm release",
     "build:watch": "tsc -p . --watch",
     "generate": "node index.js",
