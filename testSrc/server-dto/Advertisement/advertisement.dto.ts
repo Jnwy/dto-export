@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { AdType, Page } from '@storm-play/lib';
 import { Media } from 'src/media/entities/media.entity';
 import {
@@ -15,30 +16,39 @@ export class Advertisement {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty({ enum: Page })
   @Column({ type: 'enum', enum: Page })
   page: Page;
 
+  @ApiProperty({ enum: AdType })
   @Column({ type: 'enum', enum: AdType })
   type: AdType;
 
+  @ApiProperty()
   @Column({ length: 50 })
   name: string;
 
+  @ApiProperty()
   @Column({ name: 'link_en', length: 128 })
   linkEn: string;
 
+  @ApiProperty()
   @Column({ name: 'link_cn', length: 128 })
   linkCn: string;
 
+  @ApiProperty()
   @Column({ name: 'desc_en', length: 200, nullable: true })
   descEn: string;
 
+  @ApiProperty()
   @Column({ name: 'desc_cn', length: 200, nullable: true })
   descCn: string;
 
+  @ApiProperty()
   @Column({ nullable: true })
   logo: string;
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     comment: 'Create Time',
@@ -47,6 +57,7 @@ export class Advertisement {
   })
   createDate: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'timestamp',
     comment: 'Update Time',
@@ -56,6 +67,7 @@ export class Advertisement {
   })
   updateDate: Date;
 
+  @ApiProperty()
   @Column({
     type: 'timestamp',
     comment: 'Publish Time',
@@ -63,6 +75,7 @@ export class Advertisement {
   })
   publishDate: Date;
 
+  @ApiProperty()
   @Column({
     type: 'timestamp',
     comment: 'Remove Time',

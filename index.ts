@@ -5,12 +5,15 @@ import { Command } from 'commander';
 import prompts from 'prompts';
 import { genTableRun } from './generator/tableConfig.generator';
 
-import { readDirectory, writeDtoToFile } from './generator/export.generator';
+import { writeDtoToFile } from './generator/export.generator';
 import { generateMapper } from './mapper';
-import path from 'path';
-import fs from 'fs';
+import { readDirectory } from './lib/directory';
 
-let devPath: string = '';
+import fs from 'fs-extra';
+import path from 'path';
+import { processRemoveSwagger } from './generator/remove-swagger';
+
+let serverDtoPath: string = '';
 
 const handleSigTerm = () => process.exit(0);
 
@@ -55,24 +58,24 @@ async function runDtoGenerator(): Promise<void> {
   const options = program.opts();
 
   if (typeof options.path === 'string') {
-    devPath = options.path.trim();
+    serverDtoPath = options.path.trim();
   }
 
-  if (!devPath) {
+  if (!serverDtoPath) {
     const res = await prompts({
       onState: onPromptState,
       type: 'text',
       name: 'path',
       message: 'What is the path to your DTO directory?',
-      initial: 'C:\\repos\\tools\\dto-export\\testSrc\\dto',
+      initial: 'C:\\repos\\tools\\dto-export\\testSrc\\server-dto',
     });
 
     if (typeof res.path === 'string') {
-      devPath = res.path.trim();
+      serverDtoPath = res.path.trim();
     }
   }
 
-  if (!devPath) {
+  if (!serverDtoPath) {
     console.log(
       '\nPlease specify the project directory:\n' +
       `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}\n` +
@@ -84,23 +87,35 @@ async function runDtoGenerator(): Promise<void> {
   }
 
   if (options.watch) {
-    const watcher = chokidar.watch(devPath);
+    const watcher = chokidar.watch(serverDtoPath);
 
     watcher.on('change', (filePath) => {
       console.log(`File changed: ${filePath}`);
 
       // Read directory
-      const filePaths = readDirectory(devPath);
+      const filePaths = readDirectory(serverDtoPath);
 
-      writeDtoToFile(filePaths, devPath);
+      writeDtoToFile(filePaths, serverDtoPath);
     });
 
-    console.log(`Watching for changes in directory: ${devPath}`);
+    console.log(`Watching for changes in directory: ${serverDtoPath}`);
   } else {
     // Read directory
-    const filePaths = readDirectory(devPath);
-    
-    writeDtoToFile(filePaths, devPath);
+    const filePaths = readDirectory(serverDtoPath);
+
+    await writeDtoToFile(filePaths, serverDtoPath);
+
+    const clientDtoFolderPath = path.join(serverDtoPath, '../dto'); // 將修改過的檔案儲存到上一層的 ./dto 資料夾內
+    console.log(chalk.blue('Client Dto Folder: '), chalk.yellow(clientDtoFolderPath));
+
+    // 如果 ./dto 資料夾不存在，則創建它
+    if (!await fs.existsSync(clientDtoFolderPath)) {
+      await fs.mkdirSync(clientDtoFolderPath);
+    }
+
+    await fs.copySync(serverDtoPath, clientDtoFolderPath, { recursive: true });
+
+    await processRemoveSwagger(clientDtoFolderPath);
   }
 }
 

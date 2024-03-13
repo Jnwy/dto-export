@@ -1,13 +1,19 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
+import chalk from 'chalk';
 
 // const searchPath = path.join(__dirname, 'src/game/dto/');
 // const directoryPath = path.join(__dirname, 'src/dto');
 // const outputPath = path.join(__dirname, 'src/dto/index.ts');
 
 // console.log(directoryPath, outputPath);
-
-function generateExportStatements(filePaths) {
+/**
+ * 由 filePaths 產生 "export * from {filePath} ;" 的匯出區塊 string
+ * 
+ * @param filePaths 
+ * @returns 
+ */
+function generateExportStatements(filePaths: string[]): string {
   return filePaths
     .map(
       (filePath) =>
@@ -16,54 +22,30 @@ function generateExportStatements(filePaths) {
     .join('\n');
 }
 
-function readDirectory(directoryPath, parentDirectory = '') {
-  // 讀取目錄下的所有檔案和子資料夾
-  const files = fs.readdirSync(directoryPath);
 
-  // 儲存檔案路徑
-  const filePaths: any[] = [];
 
-  // 遍歷檔案和資料夾
-  files.forEach((file) => {
-    const filePath = path.join(directoryPath, file);
-
-    if (file === 'index.ts') return;
-
-    // 檢查檔案的類型
-    const stats = fs.statSync(filePath);
-    if (stats.isDirectory()) {
-      // 如果是子資料夾，則遞迴讀取該子資料夾
-      const currentDirectory = path.join(parentDirectory, file);
-      const subDirectoryFiles = readDirectory(filePath, currentDirectory);
-      filePaths.push(...subDirectoryFiles);
-    } else if (file.endsWith('.ts')) {
-      // 如果是以 .ts 結尾的檔案，則將檔案路徑存入陣列
-      const currentFilePath = path.join(parentDirectory, file);
-      filePaths.push(currentFilePath);
-    }
-  });
-
-  return filePaths;
-}
-
-function writeDtoToFile(files, outputPath = path.join(__dirname, 'src/dto/index.ts')) {
-  (async () => {
+/**
+ * 產生一個 export 所有 filePaths 的 index.ts
+ * 
+ * @param filePaths dto files path array
+ * @param outputPath path to generates index.ts file which export dtos
+ */
+async function writeDtoToFile(filePaths: string[], outputPath: string) {
+  try {
+    const fileNames = filePaths.map((file) => file.replace('.ts', ''));
+    const exportStatements = generateExportStatements(fileNames);
+    const content = `${exportStatements}\n`;
     try {
-      const fileNames = files.map((file) => file.replace('.ts', ''));
-      const exportStatements = generateExportStatements(fileNames);
-      const content = `${exportStatements}\n`;
-
-      fs.writeFile(`${outputPath}/index.ts`, content, (err) => {
-        if (err) {
-          console.error('Error writing file:', err);
-        } else {
-          console.log('index.ts file has been generated successfully!');
-        }
-      });
-    } catch (err) {
-      console.error('Error reading files:', err);
+      fs.writeFileSync(`${outputPath}/index.ts`, content);
+    } catch (error) {
+      console.error('Error writing file:', error);
+    } finally {
+      console.log(chalk.yellowBright('index.ts'), chalk.blue('file has been generated successfully!'));
     }
-  })();
+  } catch (err) {
+    console.error('Error reading files:', err);
+  }
+
 }
 
 
@@ -74,4 +56,4 @@ function writeDtoToFile(files, outputPath = path.join(__dirname, 'src/dto/index.
 
 // writeFile(filePaths);
 
-export { writeDtoToFile, readDirectory, generateExportStatements };
+export { writeDtoToFile, generateExportStatements };
