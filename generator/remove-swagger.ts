@@ -11,7 +11,7 @@ function removeApiProperty(filePath: string) {
   fileContent = fileContent.replace(/import {.*} from ["']@nestjs\/swagger["'];\s*\n?/, '');
 
   // 移除 @ApiProperty decorators
-  fileContent = fileContent.replace(/@ApiProperty\([\s\S]*?\)\s*/g, '');
+  fileContent = fileContent.replace(/@ApiProperty\((\{[^{}]*\}|[^()]*)\)\s*/gm, '');
 
   // 移除 @ApiPropertyOptional decorators
   fileContent = fileContent.replace(/@ApiPropertyOptional\([\s\S]*?\)\s*/g, '');

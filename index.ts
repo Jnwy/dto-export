@@ -12,6 +12,7 @@ import { readDirectory } from './lib/directory';
 import fs from 'fs-extra';
 import path from 'path';
 import { processRemoveSwagger } from './generator/remove-swagger';
+import { processDto } from './generator/dto';
 
 let serverDtoPath: string = '';
 
@@ -91,31 +92,12 @@ async function runDtoGenerator(): Promise<void> {
 
     watcher.on('change', (filePath) => {
       console.log(`File changed: ${filePath}`);
-
-      // Read directory
-      const filePaths = readDirectory(serverDtoPath);
-
-      writeDtoToFile(filePaths, serverDtoPath);
+      processDto(serverDtoPath);
     });
 
     console.log(`Watching for changes in directory: ${serverDtoPath}`);
   } else {
-    // Read directory
-    const filePaths = readDirectory(serverDtoPath);
-
-    await writeDtoToFile(filePaths, serverDtoPath);
-
-    const clientDtoFolderPath = path.join(serverDtoPath, '../dto'); // 將修改過的檔案儲存到上一層的 ./dto 資料夾內
-    console.log(chalk.blue('Client Dto Folder: '), chalk.yellow(clientDtoFolderPath));
-
-    // 如果 ./dto 資料夾不存在，則創建它
-    if (!await fs.existsSync(clientDtoFolderPath)) {
-      await fs.mkdirSync(clientDtoFolderPath);
-    }
-
-    await fs.copySync(serverDtoPath, clientDtoFolderPath, { recursive: true });
-
-    await processRemoveSwagger(clientDtoFolderPath);
+    processDto(serverDtoPath);
   }
 }
 
