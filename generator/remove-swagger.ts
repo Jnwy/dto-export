@@ -16,6 +16,25 @@ function removeApiProperty(filePath: string) {
   // 移除 @ApiPropertyOptional decorators
   fileContent = fileContent.replace(/@ApiPropertyOptional\([\s\S]*?\)\s*/g, '');
 
+ // remove extends class
+  fileContent = fileContent.replace(/extends[\s\S]*?\)\s*/g, '');
+
+  // 取得 import 的 class，比對整個程式碼，如果沒有再被使用到，則移除 import
+  const importClasses = fileContent.match(/import {.*} from ['"].*['"];/g);
+  if (importClasses) {
+    importClasses.forEach((importClass: string) => {
+      const className = importClass.match(/{(.*)}/)[1];
+      // className可能是多個，以逗號分隔
+      const classNames = className.split(',').map((name: string) => name.trim());
+      classNames.forEach((name: string) => {
+        console.log(name);
+        const reg = new RegExp(name, 'g');
+        if (fileContent.match(reg)) {
+          fileContent = fileContent.replace(importClass, '');
+        }
+      });      
+    });
+  }
 
   // console.log(chalk.blue('filePath: '), chalk.yellowBright(filePath));
 
