@@ -10,7 +10,7 @@
     "build": "pnpm release",
     "build:watch": "tsc -p . --watch",
     "generate": "node index.js",
-    "start": "node ./dist/index.js"
+    "start": "console-ninja npx tsx ./index.ts"
   },
   "keywords": [],
   "author": "",

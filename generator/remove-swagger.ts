@@ -16,25 +16,33 @@ function removeApiProperty(filePath: string) {
   // 移除 @ApiPropertyOptional decorators
   fileContent = fileContent.replace(/@ApiPropertyOptional\([\s\S]*?\)\s*/g, '');
 
- // remove extends class
-  fileContent = fileContent.replace(/extends[\s\S]*?\)\s*/g, '');
 
-  // 取得 import 的 class，比對整個程式碼，如果沒有再被使用到，則移除 import
-  const importClasses = fileContent.match(/import {.*} from ['"].*['"];/g);
+
+
+  // Remove the import statements for all @nestjs classes
+  const importClasses = fileContent.match(/import {.*} from ['"]@nestjs\/.*['"];/g);
+  // console.log(importClasses);
   if (importClasses) {
     importClasses.forEach((importClass: string) => {
-      const className = importClass.match(/{(.*)}/)[1];
-      // className可能是多個，以逗號分隔
-      const classNames = className.split(',').map((name: string) => name.trim());
-      classNames.forEach((name: string) => {
-        console.log(name);
-        const reg = new RegExp(name, 'g');
-        if (fileContent.match(reg)) {
-          fileContent = fileContent.replace(importClass, '');
-        }
-      });      
+      const classNames = importClass.match(/{(.*?)}/)[1].split(',').map((name: string) => name.trim());
+      classNames.forEach((className: string) => {
+        // const extendsReg = new RegExp(`extends\\s+${className}\\s*`, 'g');
+        // console.log(className);
+        const extendsReg = new RegExp(`(extends\\s+${className}).*{\\s*\n`, 'g');
+        
+        // console.log(fileContent.match(extendsReg));
+        // Remove the extends clause for the class
+        fileContent = fileContent.replace(extendsReg, '{\n');
+      });
+      // Remove the import statement for the class, including its aliases
+      const importReg = new RegExp(`import\\s+{\\s*${classNames.join('\\s*,\\s*')}\\s*} from ['"]@nestjs\/.*['"]\\s*;?`, 'g');
+      fileContent = fileContent.replace(importReg, '');
     });
   }
+
+
+
+
 
   // console.log(chalk.blue('filePath: '), chalk.yellowBright(filePath));
 
