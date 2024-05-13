@@ -22,8 +22,6 @@ function generateExportStatements(filePaths: string[]): string {
     .join('\n');
 }
 
-
-
 /**
  * 產生一個 export 所有 filePaths 的 index.ts
  * 
@@ -32,7 +30,7 @@ function generateExportStatements(filePaths: string[]): string {
  */
 async function writeDtoToFile(filePaths: string[], outputPath: string) {
   try {
-    const fileNames = filePaths.map((file) => file.replace('.ts', ''));
+    const fileNames = filePaths.map((file) => file.replace('.ts', '').replace(/\\/g, '/'));
     const exportStatements = generateExportStatements(fileNames);
     const content = `${exportStatements}\n`;
 
