@@ -27,8 +27,14 @@ function removePackageDecorator(fileContent: string, packageName: string) {
 
 function removeApiProperty(filePath: string) {
   let fileContent: string = fs.readFileSync(filePath, 'utf-8');
-  // 移除 import { xxx } from '@nestjs/swagger' 及其後的換行符 以及所有 @xxx decorators
-  fileContent = removePackageDecorator(fileContent, '@nestjs/swagger');
+  // 移除 import { xxx } from '@nestjs/swagger' 及其後的換行符
+  fileContent = fileContent.replace(/import {.*} from ["']@nestjs\/swagger["'];\s*\n?/, '');
+
+  // 移除 @ApiProperty decorators
+  fileContent = fileContent.replace(/@ApiProperty\((\{[^{}]*\}|[^()]*)\)\s*/gm, '');
+
+  // 移除 @ApiPropertyOptional decorators
+  fileContent = fileContent.replace(/@ApiPropertyOptional\([\s\S]*?\)\s*/g, '');
 
   // 移除 import { xxx } from 'class-transformer' 及其後的換行符，以及所有 @xxx decorators
   fileContent = removePackageDecorator(fileContent, 'class-transformer');
