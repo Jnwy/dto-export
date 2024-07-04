@@ -49,11 +49,12 @@ function removeApiProperty(filePath: string) {
       classNames.forEach((className: string) => {
         // const extendsReg = new RegExp(`extends\\s+${className}\\s*`, 'g');
         // console.log(className);
-        const extendsReg = new RegExp(`(extends\\s+${className}).*{\\s*\n`, 'g');
-
-        // console.log(fileContent.match(extendsReg));
+        const extendsReg = new RegExp(`(extends\\s+${className}[\\s\\S]*?(?=\\{))`, 'g');
+        
+        
+        console.log(fileContent.match(extendsReg));
         // Remove the extends clause for the class
-        fileContent = fileContent.replace(extendsReg, '{\n');
+        fileContent = fileContent.replace(extendsReg, '');
       });
       // Remove the import statement for the class, including its aliases
       const importReg = new RegExp(`import\\s+{\\s*${classNames.join('\\s*,\\s*')}\\s*} from ['"]@nestjs\/.*['"]\\s*;?`, 'g');
