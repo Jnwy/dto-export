@@ -46,6 +46,23 @@ async function writeDtoToFile(filePaths: string[], outputPath: string) {
 
     // Write a new file
     fs.writeFileSync(existingFilePath, content);
+
+    // Create a new file "devops-trigger.txt" if it doesn't exist
+    const devopsTriggerFilePath = `${outputPath}/../devops-trigger.txt`;
+    if (!fs.existsSync(devopsTriggerFilePath)) {
+      fs.writeFileSync(devopsTriggerFilePath, '');
+      console.log(chalk.yellowBright('devops-trigger.txt'), chalk.blue('file has been created successfully!'));
+    } else {
+      function getRandomEmoji(): string {
+        const emojis = ['😀', '😎', '🚀', '🌟', '🎉'];
+        const randomIndex = Math.floor(Math.random() * emojis.length);
+        return emojis[randomIndex];
+      }
+
+      // Write a random emoji into the trigger txt
+      fs.appendFileSync(devopsTriggerFilePath, getRandomEmoji());
+    }
+
     console.log(chalk.yellowBright('index.ts'), chalk.blue('file has been generated successfully!'));
   } catch (error) {
     console.error('Error writing file:', error);
