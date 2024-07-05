@@ -52,7 +52,7 @@ function removeApiProperty(filePath: string) {
         const extendsReg = new RegExp(`(extends\\s+${className}[\\s\\S]*?(?=\\{))`, 'g');
         
         
-        console.log(fileContent.match(extendsReg));
+        // console.log(fileContent.match(extendsReg));
         // Remove the extends clause for the class
         fileContent = fileContent.replace(extendsReg, '');
       });
