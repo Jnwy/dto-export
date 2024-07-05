@@ -4,8 +4,9 @@ import { readDirectory } from "../lib/directory";
 import { writeDtoToFile } from "./export.generator";
 import chalk from "chalk";
 import { processRemoveSwagger } from "./remove-swagger";
+import { GitChecker } from "../lib/check-git";
 
-export async function processDto(serverDtoPath:string) {
+export async function processDto(serverDtoPath: string) {
   // Read directory
   const filePaths = readDirectory(serverDtoPath);
 
@@ -22,4 +23,8 @@ export async function processDto(serverDtoPath:string) {
   await fs.copySync(serverDtoPath, clientDtoFolderPath, { recursive: true });
 
   await processRemoveSwagger(clientDtoFolderPath);
+
+
+  const gitChecker = new GitChecker(serverDtoPath);
+  gitChecker.run();
 }
