@@ -8,7 +8,7 @@ export class GitChecker {
 
   constructor(outputPath: string) {
     this.outputPath = outputPath;
-    this.triggerFilePath = path.join(outputPath, '../devops-trigger.txt');
+    this.triggerFilePath = path.join(outputPath, '../../devops-trigger.txt');
   }
 
   private getRandomEmoji(): string {
