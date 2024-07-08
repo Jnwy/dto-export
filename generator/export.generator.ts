@@ -44,6 +44,9 @@ async function writeDtoToFile(filePaths: string[], outputPath: string) {
       }
     }
 
+    // Write a new file
+    fs.writeFileSync(existingFilePath, content);
+
     console.log(chalk.yellowBright('index.ts'), chalk.blue('file has been generated successfully!'));
   } catch (error) {
     console.error('Error writing file:', error);
